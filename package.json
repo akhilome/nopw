@@ -1,0 +1,33 @@
+{
+  "name": "nopw-api",
+  "version": "0.1.0",
+  "description": "REST API with passwordless authentication system",
+  "main": "./dist/app.js",
+  "repository": "git@github.com:akhilome/nopw.git",
+  "author": "Kizito Akhilome <hovkard@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./dist/app.js",
+    "build": "tsc",
+    "dev": "nodemon -w 'src/**/*.ts' --exec ts-node src/app.ts",
+    "env": "sync-dotenv"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.0",
+    "@types/node": "^12.0.12",
+    "husky": "^3.0.0",
+    "nodemon": "^1.19.1",
+    "sync-dotenv": "^2.2.0",
+    "typescript": "^3.5.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn env"
+    }
+  }
+}

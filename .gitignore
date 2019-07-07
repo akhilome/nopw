@@ -1,0 +1,8 @@
+# black hole 😂
+/node_modules
+
+# published dir
+/dist
+
+# 🤫
+.env
