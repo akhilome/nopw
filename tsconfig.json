@@ -9,5 +9,6 @@
     "strictNullChecks": true,
     "noImplicitThis": true,
     "esModuleInterop": true
-  }
+  },
+  "exclude": ["tests"]
 }
