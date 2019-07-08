@@ -10,5 +10,6 @@
     "noImplicitThis": true,
     "esModuleInterop": true
   },
-  "exclude": ["tests"]
+  "include": ["src/**/*"],
+  "exclude": ["tests", "node_modules"]
 }
