@@ -6,3 +6,6 @@
 
 # 🤫
 .env
+
+# tests and coverage reporting
+/coverage
