@@ -5,8 +5,8 @@ jobs:
       - image: circleci/node:lts
       - image: circleci/postgres:latest
         environment:
-          POSTGRES_USER: $PG_USER
-          POSTGRES_DB: $PG_DB
+          POSTGRES_USER: postgres
+          POSTGRES_DB: nopw-test
 
     working_directory: ~/repo
 
