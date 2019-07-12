@@ -9,31 +9,35 @@
   "scripts": {
     "start": "node ./dist/app.js",
     "build": "rm -rf dist && tsc",
-    "dev": "nodemon -w 'src/**/*.ts' --exec ts-node src/app.ts",
+    "dev": "tsc -w & nodemon -w 'dist/**/*.js' --exec yarn start",
     "env": "sync-dotenv",
-    "pretest": "export NODE_ENV=test && yarn db:migrate:latest:dev",
-    "test": "export NODE_ENV=test && jest",
-    "posttest": "export NODE_ENV=test && yarn db:migrate:rollback:dev",
+    "pretest": "export NODE_ENV=test && yarn db:flush",
+    "test": "export NODE_ENV=test && jest -i --silent --forceExit",
     "db:migrate:make": "knex --knexfile src/database/knexfile.ts -x ts migrate:make",
     "db:migrate:latest": "knex --knexfile dist/database/knexfile.js migrate:latest",
     "db:migrate:latest:dev": "knex --knexfile src/database/knexfile.ts migrate:latest",
     "db:migrate:rollback": "knex --knexfile dist/database/knexfile.js migrate:rollback",
-    "db:migrate:rollback:dev": "knex --knexfile src/database/knexfile.ts migrate:rollback"
+    "db:migrate:rollback:dev": "knex --knexfile src/database/knexfile.ts migrate:rollback",
+    "db:flush": "yarn db:migrate:rollback:dev && yarn db:migrate:latest:dev"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "knex": "^0.18.3",
+    "mailgun-js": "^0.22.0",
     "pg": "^7.11.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.17.0",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.0",
     "@types/jest": "^24.0.15",
+    "@types/mailgun-js": "^0.22.1",
     "@types/node": "^12.0.12",
     "@types/supertest": "^2.0.8",
     "husky": "^3.0.0",
