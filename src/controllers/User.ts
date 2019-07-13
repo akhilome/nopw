@@ -1,4 +1,4 @@
-import * as Express from 'express';
+import { Request, Response } from 'express';
 import UserService from '../services/User';
 import EmailService from '../services/Email';
 
@@ -16,7 +16,7 @@ const generateLoginEmail = (loginToken: string): string => `
 `;
 
 class UserController {
-  static async signUp(req: Express.Request, res: Express.Response) {
+  static async signUp(req: Request, res: Response): Promise<Response> {
     const {
       body: { firstName, lastName, email }
     } = req;
@@ -35,20 +35,50 @@ class UserController {
         email
       });
 
-      EmailService.sendMail(
+      await EmailService.sendMail(
         newUserEmail,
         'Welcome to NOPW',
         generateLoginEmail(newUserEmail)
       );
 
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         message: 'Sign up successful'
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: 'Something went wrong while processing your request'
+      });
+    }
+  }
+
+  static async login(req: Request, res: Response): Promise<Response> {
+    const { email } = req.body;
+
+    try {
+      const validUser = await UserService.checkIfUserExists(email);
+
+      if (!validUser)
+        return res.status(401).json({
+          success: false,
+          message: 'No user with that email exists, please sign up'
+        });
+
+      await EmailService.sendMail(
+        email,
+        'New Login Request',
+        generateLoginEmail(email)
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: 'Check your email for auth link'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Somthing went wrong while processing your request'
       });
     }
   }

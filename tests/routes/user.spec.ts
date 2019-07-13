@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import EmailService from '../../src/services/Email';
 
-describe('GET /api/v1/users/signup', () => {
+describe('POST /api/v1/users/signup', () => {
   beforeEach(() => {
     jest.spyOn(EmailService, 'sendMail').mockResolvedValue(undefined);
   });
@@ -48,5 +48,45 @@ describe('GET /api/v1/users/signup', () => {
       });
 
     expect(res.status).toEqual(500);
+  });
+});
+
+describe('POST /api/v1/users/signup', () => {
+  afterAll(() => app.close());
+
+  it('should login user successfully', async () => {
+    jest.spyOn(EmailService, 'sendMail').mockResolvedValue(undefined);
+    const res = await request(app)
+      .post('/api/v1/users/login')
+      .send({ email: 'test@tester.testing' });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      success: true,
+      message: 'Check your email for auth link'
+    });
+  });
+
+  it('should not login non-existent user', async () => {
+    jest.spyOn(EmailService, 'sendMail').mockResolvedValue(undefined);
+    const res = await request(app)
+      .post('/api/v1/users/login')
+      .send({ email: 'null@gmail.com' });
+
+    expect(res.body).toEqual({
+      success: false,
+      message: 'No user with that email exists, please sign up'
+    });
+  });
+
+  it('should throw for login', async () => {
+    jest.spyOn(EmailService, 'sendMail').mockRejectedValue(new Error('shit!'));
+
+    const res = await request(app)
+      .post('/api/v1/users/login')
+      .send({ email: 'test@tester.testing' });
+
+    expect(res.status).toBe(500);
+    expect(res.body.success).toBe(false);
   });
 });
