@@ -29,16 +29,17 @@ class UserController {
           success: false,
           message: 'A user with that email already exists'
         });
-      const newUserEmail = await UserService.addNewUser({
+
+      await UserService.addNewUser({
         firstName,
         lastName,
         email
       });
 
       await EmailService.sendMail(
-        newUserEmail,
+        email,
         'Welcome to NOPW',
-        generateLoginEmail(newUserEmail)
+        generateLoginEmail(email)
       );
 
       return res.status(201).json({
