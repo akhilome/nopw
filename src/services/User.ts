@@ -1,22 +1,18 @@
 import db from '../database';
 
 class UserService {
-  static async addNewUser(user: INewUser): Promise<string> {
+  static async addNewUser(user: INewUser): Promise<void> {
     const { firstName: first_name, lastName: last_name, email } = user;
-    const [savedEmail]: string[] = await db
-      .table('users')
-      .insert({ first_name, last_name, email })
-      .returning('email');
-
-    return savedEmail;
+    await db.table('users').insert({ first_name, last_name, email });
   }
 
   static async checkIfUserExists(email: string): Promise<boolean> {
-    const [{ count }] = await db
+    const res = await db
       .table('users')
-      .count()
+      .select('id')
       .where({ email });
-    return Boolean(+count);
+
+    return Boolean(+res.length);
   }
 }
 

@@ -3,10 +3,12 @@ jobs:
   build:
     docker:
       - image: circleci/node:lts
-      - image: circleci/postgres:latest
+      - image: circleci/mysql:5.7.26
         environment:
-          POSTGRES_USER: postgres
-          POSTGRES_DB: nopw-test
+          MYSQL_ROOT_PASSWORD: root_pw
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: passw0rd
 
     working_directory: ~/repo
 
