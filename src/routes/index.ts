@@ -1,9 +1,11 @@
 import * as Express from 'express';
 import userRouter from './users';
+import authRouter from './auth';
 
 const router = Express.Router();
 
 router.use('/users', userRouter);
+router.use('/auth', authRouter);
 
 router.all('*', (req: Express.Request, res: Express.Response) => {
   res.status(404).json({

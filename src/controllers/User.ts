@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import UserService from '../services/User';
 import EmailService from '../services/Email';
+import AuthController from './Auth';
 
 const { API_ROOT_URL } = process.env;
 
 const generateLoginEmail = (loginToken: string): string => `
   <div style="text-align: center;">
     <h3>Thank You For Using The Platform</h3>
-    <p>To access your user account, <a href="http://${API_ROOT_URL}/auth/${loginToken}">click here</a> to authenticate right now.</p>
+    <p>To access your user account, <a href="http://${API_ROOT_URL}/auth/email/${loginToken}">click here</a> to authenticate right now.</p>
     <br />
     <hr />
     <br />
-    <p>Please note that this token expires in <b>15 minutes</b></p>
+    <p>Please do note that this token expires in <b>15 minutes</b></p>
   </div>
 `;
 
@@ -39,7 +40,7 @@ class UserController {
       await EmailService.sendMail(
         email,
         'Welcome to NOPW',
-        generateLoginEmail(email)
+        generateLoginEmail(AuthController.generateLoginToken(email))
       );
 
       return res.status(201).json({
@@ -69,7 +70,7 @@ class UserController {
       await EmailService.sendMail(
         email,
         'New Login Request',
-        generateLoginEmail(email)
+        generateLoginEmail(AuthController.generateLoginToken(email))
       );
 
       return res.status(200).json({
