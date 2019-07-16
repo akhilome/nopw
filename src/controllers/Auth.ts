@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 const { JWT_PRIVATE_KEY = '' } = process.env;
 
 class AuthController {
@@ -40,6 +40,24 @@ class AuthController {
       message: 'authentication successful',
       data: { token: authToken }
     });
+  }
+
+  static authorize(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Response | void {
+    const { authorization: authToken } = req.headers;
+    const decoded = AuthController.verifyToken(authToken || '');
+
+    if (!decoded)
+      return res.status(401).json({
+        success: false,
+        message: 'no or invalid authorization token'
+      });
+
+    req.body.email = decoded.email;
+    next();
   }
 }
 

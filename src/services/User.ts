@@ -14,6 +14,21 @@ class UserService {
 
     return Boolean(+res.length);
   }
+
+  static async getUserDetails(email: string): Promise<INewUser> {
+    const [res] = await db
+      .table('users')
+      .select('first_name')
+      .select('last_name')
+      .select('email')
+      .where({ email });
+
+    return {
+      firstName: res['first_name'],
+      lastName: res['last_name'],
+      email: res['email']
+    };
+  }
 }
 
 export default UserService;
