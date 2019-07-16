@@ -21,7 +21,7 @@
     "db:migrate:rollback:dev": "knex --knexfile src/database/knexfile.ts migrate:rollback",
     "db:flush": "yarn db:migrate:rollback:dev && yarn db:migrate:latest:dev",
     "db:seed": "knex --knexfile src/database/knexfile.ts seed:run",
-    "heroku-postbuild": "yarn build"
+    "heroku-postbuild": "yarn build && yarn db:migrate:latest"
   },
   "engines": {
     "node": "^10.13.0",
