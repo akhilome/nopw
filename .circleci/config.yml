@@ -39,3 +39,25 @@ jobs:
 
       # run tests!
       - run: yarn test
+
+  deploy_dev:
+    docker:
+      - image: buildpack-deps:xenial
+    steps:
+      - checkout
+      - run:
+          name: Deploy Develop to Heroku
+          command: | 
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git develop
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy_dev:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
