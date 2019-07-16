@@ -9,16 +9,18 @@
   "scripts": {
     "start": "node ./dist/app.js",
     "build": "rm -rf dist && tsc",
-    "dev": "tsc -w & nodemon -w 'dist/**/*.js' --exec yarn start",
+    "dev": "tsc -w & nodemon --watch dist --exec yarn start",
     "env": "sync-dotenv",
-    "pretest": "export NODE_ENV=test && yarn db:flush",
+    "pretest": "export NODE_ENV=test && yarn db:flush && yarn db:seed",
     "test": "export NODE_ENV=test && jest -i --silent --forceExit",
     "db:migrate:make": "knex --knexfile src/database/knexfile.ts -x ts migrate:make",
+    "db:seed:make": "knex --knexfile src/database/knexfile.ts -x ts seed:make",
     "db:migrate:latest": "knex --knexfile dist/database/knexfile.js migrate:latest",
     "db:migrate:latest:dev": "knex --knexfile src/database/knexfile.ts migrate:latest",
     "db:migrate:rollback": "knex --knexfile dist/database/knexfile.js migrate:rollback",
     "db:migrate:rollback:dev": "knex --knexfile src/database/knexfile.ts migrate:rollback",
-    "db:flush": "yarn db:migrate:rollback:dev && yarn db:migrate:latest:dev"
+    "db:flush": "yarn db:migrate:rollback:dev && yarn db:migrate:latest:dev",
+    "db:seed": "knex --knexfile src/database/knexfile.ts seed:run"
   },
   "jest": {
     "preset": "ts-jest",
