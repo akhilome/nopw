@@ -20,7 +20,12 @@
     "db:migrate:rollback": "knex --knexfile dist/database/knexfile.js migrate:rollback",
     "db:migrate:rollback:dev": "knex --knexfile src/database/knexfile.ts migrate:rollback",
     "db:flush": "yarn db:migrate:rollback:dev && yarn db:migrate:latest:dev",
-    "db:seed": "knex --knexfile src/database/knexfile.ts seed:run"
+    "db:seed": "knex --knexfile src/database/knexfile.ts seed:run",
+    "heroku-postbuild": "yarn build"
+  },
+  "engines": {
+    "node": "^10.13.0",
+    "yarn": "^1.13.0"
   },
   "jest": {
     "preset": "ts-jest",
