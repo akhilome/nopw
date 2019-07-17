@@ -1,6 +1,6 @@
 # Passwordless Auth
 
-[![CircleCI](https://circleci.com/gh/akhilome/nopw/tree/develop.svg?style=svg)](https://circleci.com/gh/akhilome/nopw/tree/develop) [![Maintainability](https://api.codeclimate.com/v1/badges/a8a8dd60bbb17ff5d3cf/maintainability)](https://codeclimate.com/github/akhilome/nopw/maintainability)
+[![CircleCI](https://circleci.com/gh/akhilome/nopw/tree/develop.svg?style=svg)](https://circleci.com/gh/akhilome/nopw/tree/develop) [![Maintainability](https://api.codeclimate.com/v1/badges/a8a8dd60bbb17ff5d3cf/maintainability)](https://codeclimate.com/github/akhilome/nopw/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a8a8dd60bbb17ff5d3cf/test_coverage)](https://codeclimate.com/github/akhilome/nopw/test_coverage)
 
 The general idea with this project is to build out a fullstack web app with a "passwordless" authentication system.
 
