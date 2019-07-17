@@ -8,7 +8,7 @@ const { API_ROOT_URL } = process.env;
 const generateLoginEmail = (loginToken: string): string => `
   <div style="text-align: center;">
     <h3>Thank You For Using The Platform</h3>
-    <p>To access your user account, <a href="http://${API_ROOT_URL}/auth/email/${loginToken}">click here</a> to authenticate right now.</p>
+    <p>To access your user account, <a href="${API_ROOT_URL}/auth/email/${loginToken}">click here</a> to authenticate right now.</p>
     <br />
     <hr />
     <br />
