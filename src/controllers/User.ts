@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import UserService from '../services/User';
 import EmailService from '../services/Email';
 import AuthController from './Auth';
+import logger from '../logging';
 
 const { API_ROOT_URL } = process.env;
 
@@ -18,13 +19,10 @@ const generateLoginEmail = (loginToken: string): string => `
 
 class UserController {
   static async signUp(req: Request, res: Response): Promise<Response> {
-    const {
-      body: { firstName, lastName, email }
-    } = req;
+    const { firstName, lastName, email } = req.body;
 
     try {
       const userExists = await UserService.checkIfUserExists(email);
-
       if (userExists)
         return res.status(409).json({
           success: false,
@@ -37,7 +35,7 @@ class UserController {
         email
       });
 
-      await EmailService.sendMail(
+      EmailService.sendMail(
         email,
         'Welcome to NOPW',
         generateLoginEmail(AuthController.generateLoginToken(email))
@@ -48,6 +46,7 @@ class UserController {
         message: 'Sign up successful'
       });
     } catch (error) {
+      logger.error(error);
       return res.status(500).json({
         success: false,
         message: 'Something went wrong while processing your request'
@@ -57,17 +56,15 @@ class UserController {
 
   static async login(req: Request, res: Response): Promise<Response> {
     const { email } = req.body;
-
     try {
       const validUser = await UserService.checkIfUserExists(email);
-
       if (!validUser)
         return res.status(401).json({
           success: false,
           message: 'No user with that email exists, please sign up'
         });
 
-      await EmailService.sendMail(
+      EmailService.sendMail(
         email,
         'New Login Request',
         generateLoginEmail(AuthController.generateLoginToken(email))
@@ -78,6 +75,7 @@ class UserController {
         message: 'Check your email for auth link'
       });
     } catch (error) {
+      logger.error(error);
       return res.status(500).json({
         success: false,
         message: 'Somthing went wrong while processing your request'

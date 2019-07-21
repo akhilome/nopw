@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import router from './routes/index';
 import bodyParser from 'body-parser';
+import logger from './logging';
 
 dotenv.config();
 const { PORT } = process.env;
@@ -20,7 +21,7 @@ app.all('*', (req: Request, res: Response) => {
 });
 
 const server = app.listen(PORT, () =>
-  console.log(`App running on port ${PORT}`)
+  logger.info(`App running on port ${PORT}`)
 );
 
 export default server;

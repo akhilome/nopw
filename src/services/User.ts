@@ -1,9 +1,12 @@
 import db from '../database';
+import logger from '../logging';
 
 class UserService {
-  static async addNewUser(user: INewUser): Promise<void> {
+  static addNewUser(user: INewUser): void {
     const { firstName: first_name, lastName: last_name, email } = user;
-    await db.table('users').insert({ first_name, last_name, email });
+    db.table('users')
+      .insert({ first_name, last_name, email })
+      .catch(e => logger.error(e));
   }
 
   static async checkIfUserExists(email: string): Promise<boolean> {
