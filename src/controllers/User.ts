@@ -3,6 +3,7 @@ import UserService from '../services/User';
 import EmailService from '../services/Email';
 import AuthController from './Auth';
 import logger from '../logging';
+import responses from '../utils/responses';
 
 const { API_ROOT_URL } = process.env;
 
@@ -19,15 +20,13 @@ const generateLoginEmail = (loginToken: string): string => `
 
 class UserController {
   static async signUp(req: Request, res: Response): Promise<Response> {
-    const { firstName, lastName, email } = req.body;
-
     try {
+      const { firstName, lastName, email } = req.body;
       const userExists = await UserService.checkIfUserExists(email);
       if (userExists)
-        return res.status(409).json({
-          success: false,
-          message: 'A user with that email already exists'
-        });
+        return res
+          .status(409)
+          .json(responses.unsucessful('A user with that email already exists'));
 
       await UserService.addNewUser({
         firstName,
@@ -41,16 +40,10 @@ class UserController {
         generateLoginEmail(AuthController.generateLoginToken(email))
       );
 
-      return res.status(201).json({
-        success: true,
-        message: 'Sign up successful'
-      });
+      return res.status(201).json(responses.successful('Sign up successful'));
     } catch (error) {
       logger.error(error);
-      return res.status(500).json({
-        success: false,
-        message: 'Something went wrong while processing your request'
-      });
+      return res.status(500).json(responses.genericError());
     }
   }
 
@@ -59,10 +52,9 @@ class UserController {
     try {
       const validUser = await UserService.checkIfUserExists(email);
       if (!validUser)
-        return res.status(401).json({
-          success: false,
-          message: 'No user with that email exists, please sign up'
-        });
+        return res
+          .status(401)
+          .json(responses.unsucessful('No user with that email exists, please sign up'));
 
       EmailService.sendMail(
         email,
@@ -70,16 +62,10 @@ class UserController {
         generateLoginEmail(AuthController.generateLoginToken(email))
       );
 
-      return res.status(200).json({
-        success: true,
-        message: 'Check your email for auth link'
-      });
+      return res.status(200).json(responses.successful('Check your email for auth link'));
     } catch (error) {
       logger.error(error);
-      return res.status(500).json({
-        success: false,
-        message: 'Somthing went wrong while processing your request'
-      });
+      return res.status(500).json(responses.genericError());
     }
   }
 }
