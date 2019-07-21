@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../../src/app';
 import EmailService from '../../src/services/Email';
+import UserService from '../../src/services/User';
 
 describe('POST /api/v1/users/signup', () => {
   beforeEach(() => {
@@ -52,10 +53,12 @@ describe('POST /api/v1/users/signup', () => {
 });
 
 describe('POST /api/v1/users/signup', () => {
+  beforeEach(() => {
+    jest.spyOn(EmailService, 'sendMail').mockResolvedValue(undefined);
+  });
   afterAll(() => app.close());
 
   it('should login user successfully', async () => {
-    jest.spyOn(EmailService, 'sendMail').mockResolvedValue(undefined);
     const res = await request(app)
       .post('/api/v1/users/login')
       .send({ email: 'test@tester.testing' });
@@ -68,7 +71,6 @@ describe('POST /api/v1/users/signup', () => {
   });
 
   it('should not login non-existent user', async () => {
-    jest.spyOn(EmailService, 'sendMail').mockResolvedValue(undefined);
     const res = await request(app)
       .post('/api/v1/users/login')
       .send({ email: 'null@gmail.com' });
@@ -80,7 +82,9 @@ describe('POST /api/v1/users/signup', () => {
   });
 
   it('should throw for login', async () => {
-    jest.spyOn(EmailService, 'sendMail').mockRejectedValue(new Error('shit!'));
+    jest
+      .spyOn(UserService, 'checkIfUserExists')
+      .mockRejectedValue(new Error('wtf!'));
 
     const res = await request(app)
       .post('/api/v1/users/login')
