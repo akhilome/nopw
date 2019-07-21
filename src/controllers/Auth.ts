@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import responses from '../utils/responses';
 const { JWT_PRIVATE_KEY = '' } = process.env;
 
 class AuthController {
@@ -27,19 +28,18 @@ class AuthController {
     const decoded = AuthController.verifyToken(token);
 
     if (!decoded)
-      return res.status(401).json({
-        success: false,
-        message: 'invalid or expired token'
-      });
+      return res
+        .status(401)
+        .json(responses.unsucessful('invalid or expired token'));
 
     const { email } = decoded;
     const authToken = AuthController.generateAuthToken(email);
 
-    return res.status(200).json({
-      success: true,
-      message: 'authentication successful',
-      data: { token: authToken }
-    });
+    return res
+      .status(200)
+      .json(
+        responses.successful('authentication successful', { token: authToken })
+      );
   }
 
   static authorize(
@@ -51,10 +51,9 @@ class AuthController {
     const decoded = AuthController.verifyToken(authToken || '');
 
     if (!decoded)
-      return res.status(401).json({
-        success: false,
-        message: 'no or invalid authorization token'
-      });
+      return res
+        .status(401)
+        .json(responses.unsucessful('no or invalid authorization token'));
 
     req.body.email = decoded.email;
     next();
