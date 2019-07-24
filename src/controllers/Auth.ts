@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import responses from '../utils/responses';
 import UserService from '../services/User';
+import { Profile } from 'passport';
+import logger from '../logging';
 const { JWT_PRIVATE_KEY = '' } = process.env;
 
 class AuthController {
@@ -63,13 +65,18 @@ class AuthController {
   static async socialCallback(
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: Profile,
     cb: CallableFunction
   ) {
     const {
       emails: [{ value: email }],
-      name: { givenName: firstName, familyName: lastName }
-    }: IProfile = profile;
+      displayName
+    } = profile;
+
+    const [firstName, lastName] =
+      displayName.split(' ').length === 1
+        ? [displayName, ' ']
+        : displayName.split(' ');
 
     const userExists = await UserService.checkIfUserExists(email);
     if (!userExists)
@@ -89,12 +96,3 @@ class AuthController {
 }
 
 export default AuthController;
-
-interface IProfile {
-  id: string;
-  displayName: string;
-  name: { familyName: string; givenName: string };
-  emails: [{ value: string; verified: boolean }];
-  photos: [{ value: string }];
-  provider: string;
-}
