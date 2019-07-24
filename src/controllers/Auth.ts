@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import responses from '../utils/responses';
+import UserService from '../services/User';
 const { JWT_PRIVATE_KEY = '' } = process.env;
 
 class AuthController {
@@ -58,6 +59,42 @@ class AuthController {
     req.body.email = decoded.email;
     next();
   }
+
+  static async socialCallback(
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    cb: CallableFunction
+  ) {
+    const {
+      emails: [{ value: email }],
+      name: { givenName: firstName, familyName: lastName }
+    }: IProfile = profile;
+
+    const userExists = await UserService.checkIfUserExists(email);
+    if (!userExists)
+      await UserService.addNewUser({ firstName, lastName, email });
+
+    return cb(null, { email });
+  }
+
+  static socialAuth(req: Request, res: Response): Response {
+    const user: { email: string } = req.user;
+    const token = AuthController.generateAuthToken(user.email);
+
+    return res
+      .status(200)
+      .json(responses.successful('authentication successful', { token }));
+  }
 }
 
 export default AuthController;
+
+interface IProfile {
+  id: string;
+  displayName: string;
+  name: { familyName: string; givenName: string };
+  emails: [{ value: string; verified: boolean }];
+  photos: [{ value: string }];
+  provider: string;
+}
