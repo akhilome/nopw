@@ -18,4 +18,17 @@ router.get(
   AuthController.socialAuth
 );
 
+router.get(
+  '/github',
+  passport.authenticate('github', {
+    scope: ['profile', 'email'],
+    session: false
+  })
+);
+router.get(
+  '/github/callback',
+  passport.authenticate('github', { session: false }),
+  AuthController.socialAuth
+);
+
 export default router;
