@@ -82,6 +82,26 @@ body: {
 curl -d '{"email":"kizito@akhilo.me"}' -H "Content-Type: application/json" -X POST https://nopw-api.herokuapp.com/api/v1/users/login
 ```
 
+### Authenticate With Google
+
+```
+GET https://nopw-api.herokuapp.com/api/v1/auth/google
+```
+
+#### Example
+
+Just hit `https://nopw-api.herokuapp.com/api/v1/auth/google` from your browser and authenticate with your Google Account.
+
+### Authenticate With Github
+
+```
+GET https://nopw-api.herokuapp.com/api/v1/auth/github
+```
+
+#### Example
+
+Just hit `https://nopw-api.herokuapp.com/api/v1/auth/github` from your browser and authenticate with your Github Account.
+
 ### View Profile
 
 ```
